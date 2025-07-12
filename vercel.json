@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "https://alshifa-pharma-ddahf7f8ehhcgre6.canadacentral-01.azurewebsites.net/api/$1"
+      }
+    ]
+  }
+  
