@@ -9,19 +9,12 @@ const navbar = () => {
   };
 
   return (
-    <nav className="bg-[#1a4b52] p-6 text-white flex justify-around items-center">
+    <nav className="bg-gray-700 p-6 text-white flex justify-around items-center">
       <div className="flex items-center">
         {/* Placeholder for an icon. You can replace this with an actual icon library like Font Awesome or Material Icons. */}
         <span className="text-2xl mr-2">🏥</span>
         <span className="text-xl font-semibold">MMC</span>
       </div>
-       <div className=''> 
-        <ul className='flex gap-10 items-center'>
-          <Link to={'/'}>Home</Link>
-          <Link to={'/pos'}>POS Screen</Link>
-          
-        </ul>
-       </div>
       <div className="relative">
         <span className="text-2xl cursor-pointer" onClick={toggleDropdown}>👤</span>
         {showDropdown && (

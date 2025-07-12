@@ -29,8 +29,7 @@ function App() {
     <div>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/pos' element={<Pos/>}/>
+        <Route path='/' element={<Pos/>}/>
         <Route path='/medicine/:id' element={<SpecificMed />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />

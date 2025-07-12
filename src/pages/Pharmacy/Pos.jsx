@@ -286,7 +286,7 @@ console.log(showReceipt)
       <div className="w-full max-w-7xl bg-white rounded-t-2xl shadow-lg p-4 flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           <span className="text-3xl text-blue-600">🛒</span>
-          <span className="text-2xl font-bold tracking-wide text-blue-700">Point of Sale</span>
+          <span className="text-2xl font-bold tracking-wide text-blue-700">MMC</span>
         </div>
         <div className="w-full max-w-3xl flex flex-col items-center mb-6">
           <label className="text-gray-700 text-sm font-semibold mb-1" htmlFor="mit-id">Search for MIT ID</label>
