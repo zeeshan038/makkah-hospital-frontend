@@ -19,7 +19,13 @@ const Login = () => {
         toast.success(response.data.msg);
         toast.success("User loggedIn successfully!")
         localStorage.setItem('token', response.data.token);
-        navigate('/'); // Navigate to home page
+        localStorage.setItem('role', response.data.role);
+        localStorage.setItem('id', response.data.id);
+        if (response.data.role === 'pharmacy') {
+          navigate('/'); // Pharmacy home
+        } else {
+          toast.error('Access denied for this role.');
+        }
       } else {
         console.error(response.data.msg);
       }

@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const navbar = () => {
+const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  }
+
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -20,7 +27,7 @@ const navbar = () => {
         {showDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
             <Link to={'/dashboard'} className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100">Admin Panel</Link>
-            <button className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100">Logout</button>
+            <button className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100" onClick={handleLogout}>Logout</button>
 
           </div>
         )}
@@ -29,4 +36,4 @@ const navbar = () => {
   )
 }
 
-export default navbar
+export default Navbar
