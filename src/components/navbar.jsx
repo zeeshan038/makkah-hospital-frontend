@@ -10,7 +10,6 @@ const Navbar = () => {
     navigate('/login');
   }
 
-
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -18,7 +17,6 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-700 p-6 text-white flex justify-around items-center">
       <div className="flex items-center">
-        {/* Placeholder for an icon. You can replace this with an actual icon library like Font Awesome or Material Icons. */}
         <span className="text-2xl mr-2">🏥</span>
         <span className="text-xl font-semibold">MMC</span>
       </div>

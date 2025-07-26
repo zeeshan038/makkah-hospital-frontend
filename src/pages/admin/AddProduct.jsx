@@ -5,6 +5,8 @@ import { BASE_URL } from '../../constant';
 import toast, { Toaster } from 'react-hot-toast';
 import { Button, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -116,6 +118,86 @@ const AddProduct = () => {
     const handleEditImageClick = () => {
         fileInputRef.current.click();
     };
+
+    // Bulk medicine upload state
+    const [bulkMedicines, setBulkMedicines] = useState([]);
+    const [bulkFile, setBulkFile] = useState(null);
+    const [showBulkTable, setShowBulkTable] = useState(false);
+
+    // Bulk medicine upload handler (parse and preview)
+    const handleBulkMedicineUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setBulkFile(file);
+        const fileName = file.name.toLowerCase();
+        if (fileName.endsWith('.csv')) {
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    if (results.data && results.data.length > 0) {
+                        setBulkMedicines(results.data);
+                        setShowBulkTable(true);
+                    } else {
+                        toast.error('No valid medicines found in file.');
+                    }
+                },
+                error: (err) => {
+                    toast.error('Error parsing file.');
+                    console.error('PapaParse error:', err);
+                }
+            });
+        } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+                if (jsonData && jsonData.length > 0) {
+                    setBulkMedicines(jsonData);
+                    setShowBulkTable(true);
+                } else {
+                    toast.error('No valid medicines found in file.');
+                }
+            };
+            reader.onerror = (err) => {
+                toast.error('Error reading Excel file.');
+                console.error('XLSX FileReader error:', err);
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            toast.error('Unsupported file type. Please upload a CSV or Excel file.');
+        }
+        // allow re-uploading the same file
+        e.target.value = '';
+    };
+
+    // Save bulk medicines (send file to API)
+    const handleSaveBulkMedicines = async () => {
+        if (!bulkFile) return toast.error('No file to upload!');
+        const uploadToastId = toast.loading('Uploading bulk medicines...');
+        const formData = new FormData();
+        formData.append('file', bulkFile);
+        try {
+            const response = await axios.post(`${BASE_URL}/api/upload/bulk-medicine`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (response.status === 200 && response.data.status) {
+                toast.success(response.data.msg || 'Bulk medicines added successfully!', { id: uploadToastId });
+                setBulkMedicines([]);
+                setBulkFile(null);
+                setShowBulkTable(false);
+            } else {
+                toast.error(response.data.msg || 'Bulk upload failed!', { id: uploadToastId });
+            }
+        } catch (err) {
+            console.error('Bulk medicine upload error:', err);
+            toast.error('Bulk upload failed!', { id: uploadToastId });
+        }
+    };
+
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -269,7 +351,64 @@ const AddProduct = () => {
                             />
                         </div>
                     </div>
-                    <div className="mt-4 sm:mt-6 flex justify-end">
+                    {/* Bulk Medicines Preview Table */}
+                    {showBulkTable && bulkMedicines.length > 0 && (
+                        <div className="my-6">
+                            <h3 className="text-lg font-bold mb-2">Bulk Medicines Preview</h3>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full border text-xs sm:text-sm">
+                                    <thead>
+                                        <tr>
+                                            {Object.keys(bulkMedicines[0]).map((key) => (
+                                                <th key={key} className="border px-2 py-1 bg-gray-100">{key}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {bulkMedicines.map((row, i) => (
+                                            <tr key={i} className="odd:bg-gray-50">
+                                                {Object.keys(bulkMedicines[0]).map((key) => (
+                                                    <td key={key} className="border px-2 py-1">{row[key]}</td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="flex gap-2 mt-4">
+                                <button
+                                    type="button"
+                                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                                    onClick={handleSaveBulkMedicines}
+                                >
+                                    Save Bulk Medicines
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
+                                    onClick={() => { setShowBulkTable(false); setBulkMedicines([]); setBulkFile(null); }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end gap-3">
+                        {/* Bulk Add Button */}
+                        <input
+                            type="file"
+                            accept=".csv, .xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            id="bulk-medicine-input"
+                            style={{ display: 'none' }}
+                            onChange={handleBulkMedicineUpload}
+                        />
+                        <button
+                            type="button"
+                            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm sm:text-base"
+                            onClick={() => document.getElementById('bulk-medicine-input').click()}
+                        >
+                            Add Med in Bulk
+                        </button>
                         <button
                             type="submit"
                             className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm sm:text-base"

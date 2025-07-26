@@ -23,6 +23,8 @@ const Login = () => {
         localStorage.setItem('id', response.data.id);
         if (response.data.role === 'pharmacy') {
           navigate('/'); // Pharmacy home
+        } else if (response.data.role === 'doctor') {
+          navigate('/doctor'); // Doctor portal
         } else {
           toast.error('Access denied for this role.');
         }

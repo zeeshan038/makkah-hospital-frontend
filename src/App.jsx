@@ -20,6 +20,7 @@ import PrivateRoute from './components/PrivateRoute'
 import Pos from './pages/Pharmacy/Pos'
 import Patients from './pages/admin/Patients'
 import SpecificPatient from './pages/admin/SpecificPatient'
+import DoctorPortal from './pages/doctor/DoctorPortal';
 
 function App() {
   const location = useLocation();
@@ -30,6 +31,8 @@ function App() {
       {!hideNavbar && <Navbar />}
       <Routes>
         <Route path='/' element={<Pos/>}/>
+<Route path='/doctor' element={<DoctorPortal/>}/>
+
         <Route path='/medicine/:id' element={<SpecificMed />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
