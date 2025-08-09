@@ -24,74 +24,74 @@ import DoctorPortal from './pages/doctor/DoctorPortal';
 
 function App() {
   const location = useLocation();
-  const hideNavbar = location.pathname.startsWith('/dashboard') ||location.pathname.startsWith('/patients')||location.pathname.startsWith('/admin/patient')|| location.pathname.startsWith('/inventory') || location.pathname.startsWith('/sales') || location.pathname.startsWith('/total-sales') || location.pathname.startsWith('/short-expirey') || location.pathname.startsWith('/expired') || location.pathname.startsWith('/signup') || location.pathname.startsWith('/login');
+  const hideNavbar = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/patients') || location.pathname.startsWith('/admin/patient') || location.pathname.startsWith('/inventory') || location.pathname.startsWith('/sales') || location.pathname.startsWith('/total-sales') || location.pathname.startsWith('/short-expirey') || location.pathname.startsWith('/expired') || location.pathname.startsWith('/signup') || location.pathname.startsWith('/login');
 
   return (
     <div>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path='/' element={<Pos/>}/>
-<Route path='/doctor' element={<DoctorPortal/>}/>
+        <Route path='/' element={<Pos />} />
+        <Route path='/doctor' element={<DoctorPortal />} />
 
         <Route path='/medicine/:id' element={<SpecificMed />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         {/* admin  */}
         <Route path='/dashboard' element={
-          
-            <AdminLayout>
-              <Dashboard />
-            </AdminLayout>
-        
+
+          <AdminLayout>
+            <Dashboard />
+          </AdminLayout>
+
         } />
         <Route path='/inventory' element={
-            <AdminLayout>
-              <ViewInventory />
-            </AdminLayout>
+          <AdminLayout>
+            <ViewInventory />
+          </AdminLayout>
         } />
         <Route path='/inventory/:id' element={
-            <AdminLayout>
-              <SpecificInventory />
-            </AdminLayout>
+          <AdminLayout>
+            <SpecificInventory />
+          </AdminLayout>
         } />
         <Route path='/inventory/add' element={
-            <AdminLayout>
-              <AddProduct />
-            </AdminLayout>
-          
+          <AdminLayout>
+            <AddProduct />
+          </AdminLayout>
+
         } />
         <Route path='/patients' element={
-            <AdminLayout>
-              <Patients/>
-            </AdminLayout>
-          
+          <AdminLayout>
+            <Patients />
+          </AdminLayout>
+
         } />
         <Route path="/admin/patient/:id" element={<AdminLayout><SpecificPatient /></AdminLayout>} />
         <Route path='/sales' element={
-          
-            <AdminLayout>
-              <SalesReport />
-            </AdminLayout>
-          
+
+          <AdminLayout>
+            <SalesReport />
+          </AdminLayout>
+
         } />
 
         <Route path='/total-sales' element={
-          
-            <AdminLayout>
-              <Sales />
-            </AdminLayout>
-          
+
+          <AdminLayout>
+            <Sales />
+          </AdminLayout>
+
         } />
 
         <Route path='/short-expirey' element={
-            <AdminLayout>
-              <ShortExpirey/>
-            </AdminLayout> 
+          <AdminLayout>
+            <ShortExpirey />
+          </AdminLayout>
         } />
         <Route path='/expired' element={
-            <AdminLayout>
-              <Expired/>
-            </AdminLayout>
+          <AdminLayout>
+            <Expired />
+          </AdminLayout>
         } />
       </Routes>
       <Toaster />

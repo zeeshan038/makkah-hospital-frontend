@@ -58,7 +58,7 @@ const Login = () => {
           textAlign: 'center',
         }}
       >
-      NEW AL-SHIFA
+      MAKKAH MEDICAL COMPLEX
       </h2>
       <Card
         title="Login"

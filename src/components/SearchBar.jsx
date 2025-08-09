@@ -5,7 +5,6 @@ const SearchBar = React.memo(({ onSearch }) => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const inputRef = useRef(null);
 
-  // Debounce effect
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -16,7 +15,6 @@ const SearchBar = React.memo(({ onSearch }) => {
     };
   }, [searchTerm]);
 
-  // Call onSearch prop with debounced term
   useEffect(() => {
     onSearch(debouncedSearchTerm);
   }, [debouncedSearchTerm, onSearch]);
