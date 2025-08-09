@@ -30,7 +30,9 @@ function App() {
     <div>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path='/' element={<Pos />} />
+        <PrivateRoute>
+          <Route path='/' element={<Pos />} />
+        </PrivateRoute>
         <Route path='/doctor' element={<DoctorPortal />} />
 
         <Route path='/medicine/:id' element={<SpecificMed />} />
@@ -38,60 +40,74 @@ function App() {
         <Route path='/login' element={<Login />} />
         {/* admin  */}
         <Route path='/dashboard' element={
-
-          <AdminLayout>
-            <Dashboard />
-          </AdminLayout>
-
+          <PrivateRoute>
+            <AdminLayout>
+              <Dashboard />
+            </AdminLayout>
+          </PrivateRoute>
         } />
         <Route path='/inventory' element={
-          <AdminLayout>
-            <ViewInventory />
-          </AdminLayout>
+          <PrivateRoute>
+            <AdminLayout>
+              <ViewInventory />
+            </AdminLayout>
+          </PrivateRoute>
         } />
         <Route path='/inventory/:id' element={
-          <AdminLayout>
-            <SpecificInventory />
-          </AdminLayout>
+          <PrivateRoute>
+            <AdminLayout>
+              <SpecificInventory />
+            </AdminLayout>
+          </PrivateRoute>
         } />
         <Route path='/inventory/add' element={
-          <AdminLayout>
-            <AddProduct />
-          </AdminLayout>
-
+          <PrivateRoute>
+            <AdminLayout>
+              <AddProduct />
+            </AdminLayout>
+          </PrivateRoute>
         } />
         <Route path='/patients' element={
-          <AdminLayout>
-            <Patients />
-          </AdminLayout>
-
+          <PrivateRoute>
+            <AdminLayout>
+              <Patients />
+            </AdminLayout>
+          </PrivateRoute>
         } />
-        <Route path="/admin/patient/:id" element={<AdminLayout><SpecificPatient /></AdminLayout>} />
+        <Route path="/admin/patient/:id" element={
+          <PrivateRoute>
+            <AdminLayout>
+              <SpecificPatient />
+            </AdminLayout>
+          </PrivateRoute>
+        } />
         <Route path='/sales' element={
-
-          <AdminLayout>
-            <SalesReport />
-          </AdminLayout>
-
+          <PrivateRoute>
+            <AdminLayout>
+              <SalesReport />
+            </AdminLayout>
+          </PrivateRoute>
         } />
-
         <Route path='/total-sales' element={
-
-          <AdminLayout>
-            <Sales />
-          </AdminLayout>
-
+          <PrivateRoute>
+            <AdminLayout>
+              <Sales />
+            </AdminLayout>
+          </PrivateRoute>
         } />
-
         <Route path='/short-expirey' element={
-          <AdminLayout>
-            <ShortExpirey />
-          </AdminLayout>
+          <PrivateRoute>
+            <AdminLayout>
+              <ShortExpirey />
+            </AdminLayout>
+          </PrivateRoute>
         } />
         <Route path='/expired' element={
-          <AdminLayout>
-            <Expired />
-          </AdminLayout>
+          <PrivateRoute>
+            <AdminLayout>
+              <Expired />
+            </AdminLayout>
+          </PrivateRoute>
         } />
       </Routes>
       <Toaster />
