@@ -58,7 +58,7 @@ const Login = () => {
           textAlign: 'center',
         }}
       >
-      MAKKAH MEDICAL COMPLEX
+      MMC
       </h2>
       <Card
         title="Login"
