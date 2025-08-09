@@ -30,9 +30,11 @@ function App() {
     <div>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <PrivateRoute>
-          <Route path='/' element={<Pos />} />
-        </PrivateRoute>
+        <Route path='/' element={
+          <PrivateRoute>
+            <Pos />
+          </PrivateRoute>
+        } />
         <Route path='/doctor' element={<DoctorPortal />} />
 
         <Route path='/medicine/:id' element={<SpecificMed />} />
