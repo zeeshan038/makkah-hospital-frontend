@@ -182,6 +182,7 @@ console.log(showReceipt)
           brand: selectedMedicine.brand,
           quantity: qtyToAdd,
           price: selectedMedicine.price || 0,
+          sehatPrice: selectedMedicine.sehatPrice ?? null,
           totalQuantity: selectedMedicine.totalQuantity || 0
         }
       ]);
@@ -198,8 +199,9 @@ console.log(showReceipt)
     setCart(cart.filter(item => item.medicineId !== medicineId));
   };
 
-  // Calculate total
-  const totalAmount = cart.reduce((sum, item) => sum + item.quantity * (item.price || 0), 0);
+  // Calculate total using effective price
+  const getEffectivePrice = (item) => (isSehatCard ? (item.sehatPrice ?? item.price ?? 0) : (item.price ?? 0));
+  const totalAmount = cart.reduce((sum, item) => sum + item.quantity * getEffectivePrice(item), 0);
   const discountedTotal = totalAmount - (Number(discount) || 0);
   const balance = (Number(amountPaid) || 0) - discountedTotal;
 
@@ -230,7 +232,7 @@ console.log(showReceipt)
         medicines: cart.map(item => ({
           medicineId: item.medicineId,
           quantity: item.quantity,
-          sellingPrice: item.price
+          sellingPrice: getEffectivePrice(item)
         })),
         ...(selectedMit?.MITId ? { MITId: selectedMit.MITId } : {}),
         isSehatCard: Boolean(isSehatCard),
@@ -466,8 +468,13 @@ console.log(showReceipt)
                       <td className="px-3 py-2 align-middle font-semibold text-left whitespace-nowrap">{item.name}</td>
                       <td className="px-3 py-2 align-middle text-xs text-gray-700 whitespace-nowrap">{item.brand}</td>
                       <td className="px-3 py-2 align-middle text-center">{item.quantity}</td>
-                      <td className="px-3 py-2 align-middle text-center">{item.price}</td>
-                      <td className="px-3 py-2 align-middle text-center">{item.quantity * item.price}</td>
+                      <td className="px-3 py-2 align-middle text-center">
+                        {getEffectivePrice(item)}
+                        {isSehatCard && item.sehatPrice != null && (
+                          <span className="ml-1 text-xs text-purple-700">(Sehat)</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-2 align-middle text-center">{item.quantity * getEffectivePrice(item)}</td>
                       <td className="px-3 py-2 align-middle text-center text-xs text-gray-500">{item.totalQuantity}</td>
                       <td className="px-3 py-2 align-middle text-center"><button className="ml-2 text-red-500 hover:text-red-700" onClick={() => handleRemoveFromCart(item.medicineId)} title="Remove"><span className="text-lg">✕</span></button></td>
                     </tr>
