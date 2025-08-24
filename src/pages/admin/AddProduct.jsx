@@ -16,6 +16,7 @@ const AddProduct = () => {
         description: '',
         brand: '',
         price: '',
+        sehatPrice: '',
         category: '',
         manufacturer: '',
     });
@@ -84,6 +85,7 @@ const AddProduct = () => {
             const dataToSend = { 
                 ...formData, 
                 price: parseInt(formData.price),
+                ...(formData.sehatPrice !== '' ? { sehatPrice: parseInt(formData.sehatPrice) } : {}),
                 // image is already updated in formData by handleImageFileChange
                 batchNumber: batchData.batchNumber,
                 purchasePrice: parseInt(batchData.purchasePrice),
@@ -96,7 +98,7 @@ const AddProduct = () => {
             if (response.data.status) {
                 toast.success(response.data.msg || 'Medicine added successfully!');
                 setFormData({
-                    name: '', description: '', brand: '', price: '', 
+                    name: '', description: '', brand: '', price: '', sehatPrice: '',
                     category: '', manufacturer: '', image: ''
                 });
                 setBatchData({
@@ -253,6 +255,17 @@ const AddProduct = () => {
                                 onChange={handleInputChange}
                                 className="w-full p-2 border rounded-md text-sm sm:text-base"
                                 required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Sehat Price (optional)</label>
+                            <input
+                                type="number"
+                                name="sehatPrice"
+                                value={formData.sehatPrice}
+                                onChange={handleInputChange}
+                                className="w-full p-2 border rounded-md text-sm sm:text-base"
+                                placeholder="Enter Sehat Card price"
                             />
                         </div>
                         <div>

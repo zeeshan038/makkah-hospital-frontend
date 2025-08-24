@@ -19,6 +19,7 @@ const SpecificInventory = () => {
         description: '',
         brand: '',
         price: '',
+        sehatPrice: '',
         category: '',
         manufacturer: '',
         image: ''
@@ -43,6 +44,7 @@ const SpecificInventory = () => {
                     description: response.data.medicine.description,
                     brand: response.data.medicine.brand,
                     price: response.data.medicine.price,
+                    sehatPrice: response.data.medicine.sehatPrice ?? '',
                     category: response.data.medicine.category,
                     manufacturer: response.data.medicine.manufacturer,
                     image: response.data.medicine.image || ''
@@ -118,6 +120,7 @@ const SpecificInventory = () => {
                 description: formData.description,
                 brand: formData.brand,
                 price: parseInt(formData.price),
+                ...(formData.sehatPrice !== '' ? { sehatPrice: parseInt(formData.sehatPrice) } : {}),
                 category: formData.category,
                 manufacturer: formData.manufacturer
             };
@@ -276,6 +279,17 @@ const SpecificInventory = () => {
                                 value={formData.price}
                                 onChange={handleInputChange}
                                 className="w-full p-2 border rounded-md text-sm sm:text-base"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Sehat Price (optional)</label>
+                            <input
+                                type="number"
+                                name="sehatPrice"
+                                value={formData.sehatPrice}
+                                onChange={handleInputChange}
+                                className="w-full p-2 border rounded-md text-sm sm:text-base"
+                                placeholder="Enter Sehat Card price"
                             />
                         </div>
                         <div>

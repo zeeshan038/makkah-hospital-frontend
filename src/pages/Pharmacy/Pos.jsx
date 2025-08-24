@@ -6,6 +6,11 @@ const Pos = () => {
   // ...existing state
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptMitId, setReceiptMitId] = useState("");
+  // Sehat Card
+  const [isSehatCard, setIsSehatCard] = useState(false);
+  const [sehatModalOpen, setSehatModalOpen] = useState(false);
+  const [sehatCardNumber, setSehatCardNumber] = useState("");
+  const [sehatCardName, setSehatCardName] = useState("");
 
   // MIT search state
   const [mitId, setMitId] = useState("");
@@ -209,12 +214,15 @@ console.log(showReceipt)
       setSubmitting(false);
       return;
     }
-    if (cart.length === 0) {
-      setSubmitError("Cart is empty");
+
+    // If Sehat Card is selected, require details
+    if (isSehatCard && (!sehatCardNumber || !sehatCardName)) {
+      setSubmitError("Enter Sehat Card number and name");
+      setSehatModalOpen(true);
       setSubmitting(false);
       return;
     }
-  
+
     try {
       const payload = {
         patientName,
@@ -223,13 +231,12 @@ console.log(showReceipt)
           medicineId: item.medicineId,
           quantity: item.quantity,
           sellingPrice: item.price
-        }))
+        })),
+        ...(selectedMit?.MITId ? { MITId: selectedMit.MITId } : {}),
+        isSehatCard: Boolean(isSehatCard),
+        ...(isSehatCard ? { sehatCardNumber, sehatCardName } : {})
       };
-  
-      if (selectedMit && selectedMit.MITId) {
-        payload.MITId = selectedMit.MITId;
-      }
-  
+
       const res = await fetch(`${BASE_URL}/api/sale/sell-med`, {
         method: "POST",
         headers: {
@@ -239,7 +246,7 @@ console.log(showReceipt)
       });
       console.log("res", res);
       if (!res.ok) throw new Error("Sale failed");
-  
+
       // --- MIT ID logic for receipt ---
       let mitIdForReceipt = selectedMit?.MITId;
       let apiData = null;
@@ -253,24 +260,24 @@ console.log(showReceipt)
       }
       setReceiptMitId(mitIdForReceipt || "");
       // --- END MIT ID logic ---
-  
+
       setSubmitSuccess("Sale successful!");
-      console.log("mitIdForReceipt", mitIdForReceipt); 
-      
+      console.log("mitIdForReceipt", mitIdForReceipt);
+
       // ✅ Step 1: Show receipt
       setShowReceipt(true);
-  
+
       // ✅ Step 2: Wait a bit and then print
       setTimeout(() => {
         window.print();
-  
+
         // ✅ Step 3: Reset state after printing
         setCart([]);
         setAmountPaid("");
         setDiscount(0);
         setShowReceipt(false); // hide receipt again
       }, 300);
-  
+
     } catch (err) {
       setSubmitError(err.message || "Error during sale");
     } finally {
@@ -278,9 +285,8 @@ console.log(showReceipt)
     }
   };
   
-  
-
   return (
+    <>
     <div className="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen py-8 px-2 flex flex-col items-center">
       {/* POS Header */}
       <div className="w-full max-w-7xl bg-white rounded-t-2xl shadow-lg p-4 flex items-center justify-between mb-2">
@@ -560,6 +566,25 @@ console.log(showReceipt)
                 min="0"
               />
             </div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={isSehatCard}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setIsSehatCard(checked);
+                    if (checked) setSehatModalOpen(true);
+                  }}
+                />
+                <span className="font-semibold text-purple-700">Sehat Card</span>
+              </label>
+              {isSehatCard && (
+                <button type="button" className="text-sm text-blue-600 underline" onClick={() => setSehatModalOpen(true)}>
+                  Edit details
+                </button>
+              )}
+            </div>
             <button
               className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow mb-2"
               onClick={handleConfirmPayment}
@@ -580,6 +605,50 @@ console.log(showReceipt)
         </div>
       </div>
     </div>
+    {/* Sehat Card Modal */}
+    {sehatModalOpen && (
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+          <h3 className="text-lg font-bold mb-4">Sehat Card Details</h3>
+          <div className="mb-3">
+            <label className="block text-sm font-semibold mb-1">Card Number</label>
+            <input
+              className="border rounded px-3 py-2 w-full"
+              value={sehatCardNumber}
+              onChange={(e) => setSehatCardNumber(e.target.value)}
+              placeholder="Enter Sehat Card Number"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-1">Card Holder Name</label>
+            <input
+              className="border rounded px-3 py-2 w-full"
+              value={sehatCardName}
+              onChange={(e) => setSehatCardName(e.target.value)}
+              placeholder="Enter Name"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <button
+              className="px-4 py-2 rounded bg-gray-200"
+              onClick={() => {
+                setSehatModalOpen(false);
+                if (!sehatCardNumber && !sehatCardName) setIsSehatCard(false);
+              }}
+            >Cancel</button>
+            <button
+              className="px-4 py-2 rounded bg-blue-600 text-white"
+              onClick={() => {
+                if (!sehatCardNumber || !sehatCardName) { toast.error('Please enter both number and name'); return; }
+                setIsSehatCard(true);
+                setSehatModalOpen(false);
+              }}
+            >Save</button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
